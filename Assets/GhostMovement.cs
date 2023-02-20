@@ -17,13 +17,20 @@ public class GhostMovement : MonoBehaviour
 
    private Quaternion localRotation  = Quaternion.Euler(0f, 0f, 0f);
 
-private float sliderLastX = 0f;
-public float sliderX = 0f;
-   
 
    private void Awake(){
     mainCamera = Camera.main;
    
+   }
+
+   private void Update() {
+    
+    Vector3 targetDirection = targetPosition - transform.position;
+    localRotation = Quaternion.LookRotation(targetDirection);
+    transform.rotation = Quaternion.Slerp(transform.rotation, localRotation, Time.deltaTime * playerSpeed);
+
+    Debug.Log("Destination:" + targetPosition);
+    Debug.Log("Local Rotation:"+ localRotation);
    }
     
 
@@ -50,27 +57,29 @@ public float sliderX = 0f;
         targetPosition=hit.point;
 
        }
-
-        // transform.rotation = Quaternion.Slerp(transform.rotation,localRotation,playerSpeed * Time.deltaTime);
-        transform.rotation = transform.rotation * localRotation; 
+            
       
     }
 
     private IEnumerator PlayerMoveTowards(Vector3 target)
     {
-     
     
         while(Vector3.Distance(transform.position,target)>0.1f)
         {
           Vector3 destination = Vector3.MoveTowards(transform.position, target, playerSpeed * Time.deltaTime);
+            
             transform.position= destination;
+            
 
            
-             localRotation = Quaternion.Euler(destination);
-              print("Destination:");
-             Debug.Log(destination);
-             print("Local Rotation:");
-             Debug.Log(localRotation);
+             
+           // Vector3 relativePoint = transform.InverseTransformPoint(destination);
+             // Vector3 relativePoint = (destination-transform.position).normalized;
+             
+             // transform.rotation *= localRotation;
+
+           
+             
             
 
             yield return null;

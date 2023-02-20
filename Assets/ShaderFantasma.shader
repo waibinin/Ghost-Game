@@ -3,6 +3,7 @@ Shader "Custom/ShaderFantasma"
     Properties
     {
         _Color ("Color", Color) = (1,1,1,1)
+        [NoScaleOffset] _NormalMap("Normals",2D)= "bump"{}
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
        _Metallic ("Metallic", Range(0,1)) = 0.0
@@ -29,6 +30,7 @@ Shader "Custom/ShaderFantasma"
             float2 uv_MainTex;
             float multiplyValue; 
             float displacementValue;
+            float2 uv_NormalMap;
         };
 
         half _Glossiness;
@@ -37,6 +39,7 @@ Shader "Custom/ShaderFantasma"
         fixed _Amount;
         fixed _displacementAmount;
         sampler2D _DisplacementTexture;
+        sampler2D _NormalMap;
 
       
         void vert(inout appdata_full v, out Input o) {
@@ -68,6 +71,7 @@ Shader "Custom/ShaderFantasma"
 				IN.multiplyValue);//the lerp factor is how much we've scaled our vertex
 
                 o.Albedo = lerp(c.rgb * c.a, float3(0, 0, 0), IN.displacementValue); //lerp based on the displacement
+                 o.Normal = UnpackNormal (tex2D (_NormalMap, IN.uv_NormalMap));
 			o.Alpha = c.a;
         }
         ENDCG
