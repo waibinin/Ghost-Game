@@ -57,6 +57,8 @@ public class GhostMovement : MonoBehaviour
         targetPosition=hit.point;
 
        }
+
+       FindObjectOfType<DialogueManager>().DisplayNextSentence();
             
       
     }
